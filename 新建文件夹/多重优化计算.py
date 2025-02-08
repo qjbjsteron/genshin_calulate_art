@@ -312,7 +312,7 @@ if __name__ == "__main__":
     # 初始化基础角色（无圣遗物主词条）
     base_char = CharacterStats()
 
-    # 执行优化
+    # 执行优化算法
     optimizer = ArtifactOptimizer(base_char)
     result = optimizer.optimize()
 
