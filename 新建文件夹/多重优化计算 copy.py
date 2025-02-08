@@ -186,7 +186,7 @@ class ArtifactOptimizer:
         return best_sub, max_dmg
 
     def _calculate_marginal_gains(self, final_char):
-        """计算边际收益（含增伤词条）"""
+        """计算边际收益 （含增伤词条）"""
         gains = {}
         base_dmg = DamageCalculator.calculate_damage(final_char)
 
