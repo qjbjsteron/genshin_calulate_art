@@ -27,7 +27,7 @@ class CharacterStats:
                  independent_multiplier=1.0,
 
                  # 武器参数,赤沙之杖的精通转攻击为例
-                 weapon_em_to_atk_ratio=2.74,   #精通转攻击比例
+                 weapon_em_to_atk_ratio=2.74,   #精通转攻击的比例
                  reaction_type='amplify',
                  reaction_rate=2.0):
         # 初始化属性（无圣遗物主词条）
