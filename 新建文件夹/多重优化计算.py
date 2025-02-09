@@ -296,6 +296,7 @@ def format_result(result):
 暴击伤害：{c.crit_damage:.1%}
 元素精通：{c.elemental_mastery}
 伤害加成：{c.damage_bonus:.1%}
+武器特效提供的攻击力：{c.weapon_attack_bonus():.1f}
 
 【边际收益/词条】
 攻击：{result['gains']['atk']:.2%}
