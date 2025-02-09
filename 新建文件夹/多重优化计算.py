@@ -5,32 +5,39 @@ import time
 
 class CharacterStats:
     def __init__(self,
-                 # 基础属性
-                 skill_multiplier=15.0,
-                 base_attack=884.0,
-                 attack_bonus_pct=0.0,
-                 crit_rate=0.711,
-                 crit_damage=1.584,
-                 damage_bonus=3.248,  # 333.4%增伤
-                 elemental_mastery=800.0,
+                 # 基础属性（不含圣遗物加成（花羽主词条除外））
+                 normal_mutiplier=15.0, #普通倍率
+                 skill_multiplier=15.0, #可反应倍率
+                 base_attack=884.0,     #基础攻击
+                 attack_bonus_pct=0.0,  #百分比攻击加成
+                 crit_rate=0.711,       #暴击率
+                 crit_damage=1.584,     #爆击伤害
+                 damage_bonus=3.248,    #伤害加成
+                 elemental_mastery=800.0,   #元素精通
 
                  # 防御属性
-                 enemy_resistance=-1.15,
-                 defense_reduction=0.0,
-                 ignore_defense_pct=0.0,
-                 enemy_level=100,
+                 enemy_resistance=-1.15,#敌人抗性
+                 defense_reduction=0.0, #减防数值
+                 ignore_defense_pct=0.0,#无视防御数值
+                 char_level =90,       #角色等级
+                 enemy_level=100,       #敌人等级
 
                  # 特殊加成
-                 flat_bonus=683.0,
-                 base_bonus_count=1,
-                 base_bonus=3540.0,
-                 independent_multiplier=1.0,
+                 flat_bonus=683.0,      #固定攻击加成
+                 base_bonus_count=1,    #固定数值加成次数
+                 base_bonus=3540.0,     #固定数值加成（如申鹤羽毛）
+                 
+                 # 反应加成
+                 reaction_type='amplify',       #反应类型
+                 reaction_rate=2.0,             #反应系数
 
-                 # 武器参数,赤沙之杖的精通转攻击为例
-                 weapon_em_to_atk_ratio=2.74,   #精通转攻击比例
-                 reaction_type='amplify',
-                 reaction_rate=2.0):
+                 independent_multiplier=1.0,    #独立乘区
+
+                 # 额外参数设定,以赤沙之杖的精通转攻击为例
+                 weapon_em_to_atk_ratio=2.74   #精通转攻击比例
+                 ):            
         # 初始化属性（无圣遗物主词条）
+        self.normal_mutiplier = normal_mutiplier
         self.skill_multiplier = skill_multiplier
         self.base_attack = base_attack
         self.attack_bonus_pct = attack_bonus_pct
@@ -43,6 +50,7 @@ class CharacterStats:
         self.enemy_resistance = enemy_resistance
         self.defense_reduction = defense_reduction
         self.ignore_defense_pct = ignore_defense_pct
+        self.char_level = char_level
         self.enemy_level = enemy_level
 
         # 特殊加成
@@ -67,7 +75,7 @@ class CharacterStats:
         """武器特效攻击加成"""
         return min(
             self.elemental_mastery * self.weapon_em_to_atk_ratio,
-            self.base_attack * 5.0
+            self.base_attack * 5.0         #限制在基础攻击力的5倍以内
         )
 
     def total_attack(self):
@@ -82,9 +90,8 @@ class DamageCalculator:
     def calculate_damage(char):
         """综合伤害计算"""
         # 防御区计算
-        char_level = 90
         defense = (char.enemy_level + 100) * (1 - char.defense_reduction) * (1 - char.ignore_defense_pct)
-        defense_multiplier = (char_level + 100) / (char_level + 100 + defense)
+        defense_multiplier = (char.char_level + 100) / (char.char_level + 100 + defense)
 
         # 抗性区
         resist = char.enemy_resistance
