@@ -285,7 +285,7 @@ def format_result(result):
     """格式化输出结果"""
     c = result['final_char']
     report = f"""
-=== 最终优化结果 ===
+=== 最终优化的结果 ===
 总伤害：{result['damage']:,.0f}
 
 【主词条配置】
