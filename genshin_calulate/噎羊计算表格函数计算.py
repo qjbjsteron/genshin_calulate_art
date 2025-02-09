@@ -6,9 +6,10 @@ import time
 class CharacterStats:
     def __init__(self,
                  # 基础属性
-                 skill_multiplier=15.0,     #倍率
+                 skill_multiplier=44.05,     #反应倍率
+                 normal_skill_multiplier=18.55,#正常倍率
                  base_attack=884.0,         #基础攻击
-                 attack_bonus_pct=0.0,      #百分比攻击加成
+                 attack_bonus_pct=0.4,      #百分比攻击加成
                  crit_rate=0.711,           #暴击率
                  crit_damage=1.584,         #爆伤
                  damage_bonus=3.248,        #增伤
@@ -23,7 +24,7 @@ class CharacterStats:
 
                  # 特殊加成
                  flat_bonus=683.0,          #固定攻击加成(包含羽毛主词条等)
-                 base_bonus_count=1,        #固定加成次数
+                 base_bonus_count=10,       #固定加成次数
                  base_bonus=3540.0,         #固定基础加成(如申鹤羽毛)
 
                  #反应乘区
@@ -37,6 +38,7 @@ class CharacterStats:
                  ):
         # 初始化属性（无圣遗物主词条）
         self.skill_multiplier = skill_multiplier
+        self.normal_skill_multiplier = normal_skill_multiplier
         self.base_attack = base_attack
         self.attack_bonus_pct = attack_bonus_pct
         self.crit_rate = crit_rate
@@ -82,12 +84,24 @@ class CharacterStats:
         return (self.base_attack * (1 + self.attack_bonus_pct)
                 + self.flat_bonus
                 + self.weapon_attack_bonus())
+    
+    
 
 
 class DamageCalculator:
     @staticmethod
     def calculate_damage(char: object) -> object:
         """综合伤害计算"""
+        # 基础区计算
+        baseMultiplier1 = char.skill_multiplier * char.total_attack() + char.base_bonus#可增幅倍率
+        baseMultiplier2 = char.normal_skill_multiplier * char.total_attack() + char.base_bonus#普通倍率
+
+        # 增伤区计算
+        damageBonusZone = 1 + char.damage_bonus
+
+        # 双爆区计算
+        critMultiplierZone = 1 + min(char.crit_rate, 1.0) * char.crit_damage
+
         # 防御区计算
         defense = (char.enemy_level + 100) * (1 - char.defense_reduction) * (1 - char.ignore_defense_pct)
         defense_multiplier = (char.char_level + 100) / (char.char_level + 100 + defense)
@@ -108,18 +122,32 @@ class DamageCalculator:
         else:
             reaction_multiplier = 1.0
 
+        # 可增幅伤害倍率
+        dmg1 =  (baseMultiplier1#这里是基础区
+                 *reaction_multiplier#增幅区
+                 *damageBonusZone#这是增伤区
+                 *critMultiplierZone#双爆区
+                 *defense_multiplier#防御区
+                 *resist_multiplier#抗性区
+                 *char.independent_multiplier#独立区                            
+                )
+        # 普通伤害倍率
+        dmg2 = (baseMultiplier2#这里是基础区
+                 *damageBonusZone#这是增伤区
+                 *critMultiplierZone#双爆区
+                 *defense_multiplier#防御区
+                 *resist_multiplier#抗性区
+                 *char.independent_multiplier#独立区                            
+                )
+
         return (
-                (char.skill_multiplier * char.total_attack() + char.base_bonus) #这里是基础区
-                * (1 + char.damage_bonus)                                       #这是增伤区
-                * (1 + min(char.crit_rate, 1.0) * char.crit_damage)             #双爆区
-                * reaction_multiplier                                           #增幅区
-                * defense_multiplier                                            #防御区
-                * resist_multiplier                                             #抗性区
-                * char.independent_multiplier                                   #独立区
+            dmg1
+            +dmg2               
         )
 
 
 class ArtifactOptimizer:
+    '''求解主副词条最优选择'''
     def __init__(self, base_char):
         self.base_char = copy.deepcopy(base_char)
         self.main_options = [
@@ -287,10 +315,10 @@ def format_result(result):
 === 最终优化结果 ===
 总伤害：{result['damage']:,.0f}
 
-【主词条配置】
+【最优主词条配置】
 {format_main_combo(result['main_combo'])}
 
-【副词条分配】
+【最优副词条分配】
 攻击词条：{result['sub_allocation'][0]}
 暴击词条：{result['sub_allocation'][1]}
 暴伤词条：{result['sub_allocation'][2]}
@@ -302,6 +330,7 @@ def format_result(result):
 暴击伤害：{c.crit_damage:.1%}
 元素精通：{c.elemental_mastery}
 伤害加成：{c.damage_bonus:.1%}
+武器特效转攻击加成：{c.weapon_attack_bonus():,.0f}
 
 【边际收益/词条】
 攻击：{result['gains']['atk']:.2%}
