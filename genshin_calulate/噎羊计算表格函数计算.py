@@ -6,30 +6,35 @@ import time
 class CharacterStats:
     def __init__(self,
                  # 基础属性
-                 skill_multiplier=15.0,
-                 base_attack=884.0,
-                 attack_bonus_pct=0.0,
-                 crit_rate=0.711,
-                 crit_damage=1.584,
-                 damage_bonus=3.248,  # 333.4%增伤
-                 elemental_mastery=800.0,
+                 skill_multiplier=15.0,     #倍率
+                 base_attack=884.0,         #基础攻击
+                 attack_bonus_pct=0.0,      #百分比攻击加成
+                 crit_rate=0.711,           #暴击率
+                 crit_damage=1.584,         #爆伤
+                 damage_bonus=3.248,        #增伤
+                 elemental_mastery=800.0,   #元素精通
 
                  # 防御属性
-                 enemy_resistance=-1.15,
-                 defense_reduction=0.0,
-                 ignore_defense_pct=0.0,
-                 enemy_level=100,
+                 enemy_resistance=-1.15,    #抗性
+                 defense_reduction=0.0,     #减防数值
+                 ignore_defense_pct=0.0,    #无视防御数值
+                 enemy_level=100,           #敌人等级
+                 char_level=90,             #角色等级
 
                  # 特殊加成
-                 flat_bonus=683.0,
-                 base_bonus_count=1,
-                 base_bonus=3540.0,
-                 independent_multiplier=1.0,
+                 flat_bonus=683.0,          #固定攻击加成(包含羽毛主词条等)
+                 base_bonus_count=1,        #固定加成次数
+                 base_bonus=3540.0,         #固定基础加成(如申鹤羽毛)
 
-                 # 武器参数,赤沙之杖的精通转攻击为例
+                 #反应乘区
+                 reaction_type='amplify',   #反应类型"增幅amplify"
+                 reaction_rate=2.0,         #反应系数
+                 #独立乘区
+                 independent_multiplier=1.0,#独立乘区
+
+                 #特殊参数,赤沙之杖的精通转攻击为例
                  weapon_em_to_atk_ratio=2.74,   #精通转攻击比例
-                 reaction_type='amplify',
-                 reaction_rate=2.0):
+                 ):
         # 初始化属性（无圣遗物主词条）
         self.skill_multiplier = skill_multiplier
         self.base_attack = base_attack
@@ -38,12 +43,14 @@ class CharacterStats:
         self.crit_damage = crit_damage
         self.damage_bonus = damage_bonus
         self.elemental_mastery = elemental_mastery
+        
 
         # 防御属性
         self.enemy_resistance = enemy_resistance
         self.defense_reduction = defense_reduction
         self.ignore_defense_pct = ignore_defense_pct
         self.enemy_level = enemy_level
+        self.char_level = char_level
 
         # 特殊加成
         self.flat_bonus = flat_bonus
@@ -82,9 +89,8 @@ class DamageCalculator:
     def calculate_damage(char: object) -> object:
         """综合伤害计算"""
         # 防御区计算
-        char_level = 90
         defense = (char.enemy_level + 100) * (1 - char.defense_reduction) * (1 - char.ignore_defense_pct)
-        defense_multiplier = (char_level + 100) / (char_level + 100 + defense)
+        defense_multiplier = (char.char_level + 100) / (char.char_level + 100 + defense)
 
         # 抗性区
         resist = char.enemy_resistance
@@ -103,13 +109,13 @@ class DamageCalculator:
             reaction_multiplier = 1.0
 
         return (
-                (char.skill_multiplier * char.total_attack() + char.base_bonus)
-                * (1 + char.damage_bonus)
-                * (1 + min(char.crit_rate, 1.0) * char.crit_damage)
-                * reaction_multiplier
-                * defense_multiplier
-                * resist_multiplier
-                * char.independent_multiplier
+                (char.skill_multiplier * char.total_attack() + char.base_bonus) #这里是基础区
+                * (1 + char.damage_bonus)                                       #这是增伤区
+                * (1 + min(char.crit_rate, 1.0) * char.crit_damage)             #双爆区
+                * reaction_multiplier                                           #增幅区
+                * defense_multiplier                                            #防御区
+                * resist_multiplier                                             #抗性区
+                * char.independent_multiplier                                   #独立区
         )
 
 
@@ -134,9 +140,9 @@ class ArtifactOptimizer:
             ]
         ]
         self.substat_rules = {
-            'total': 42,
-            'crit_limit': 32,
-            'stat_limits': 24
+            'total': 42,                #总词条数
+            'crit_limit': 32,           #双爆词条上限
+            'stat_limits': 24           #单词条上限
         }
 
     def _apply_main_stats(self, combination):
