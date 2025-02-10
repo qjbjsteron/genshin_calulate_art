@@ -135,9 +135,10 @@ class DamageCalculator:
             baseMultiplier1 += quichen_base*char.quichen_count
         else:
             baseMultiplier1 = baseMultiplier1
+            reaction_multiplier = 1.0
 
 
-        # 可增幅伤害倍率
+        # 可反应伤害
         dmg1 =  (baseMultiplier1#这里是基础区
                  *reaction_multiplier#增幅区
                  *damageBonusZone#这是增伤区
@@ -146,7 +147,7 @@ class DamageCalculator:
                  *resist_multiplier#抗性区
                  *char.independent_multiplier#独立区                            
                 )
-        # 普通伤害倍率
+        # 普通伤害
         dmg2 = (baseMultiplier2#这里是基础区
                  *damageBonusZone#这是增伤区
                  *critMultiplierZone#双爆区
