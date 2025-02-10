@@ -13,7 +13,7 @@ class CharacterStats:
                  crit_rate=0.68,           #暴击率
                  crit_damage=1.584,         #爆伤
                  damage_bonus=1.13,        #增伤
-                 elemental_mastery=100,   #元素精通
+                 elemental_mastery=1,   #元素精通
 
                  # 防御属性
                  enemy_resistance=-1.15,    #抗性
