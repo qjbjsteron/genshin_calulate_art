@@ -31,6 +31,7 @@ class CharacterStats:
                  reaction_type='aggravate',   #反应类型"增幅amplify""超激化aggravate""蔓激化spread"
                  quichen_count = 30,         #激化触发次数
                  reaction_rate=2.0,         #增幅反应系数
+                 reaction_bonus = 0.0,        #反应伤害提升(如魔女套15%)
                  #独立乘区
                  independent_multiplier=1.0,#独立乘区
 
@@ -61,6 +62,7 @@ class CharacterStats:
         self.base_bonus = base_bonus
         self.independent_multiplier = independent_multiplier
         self.quichen_count = quichen_count
+        self.reaction_bonus = reaction_bonus
 
         # 武器反应参数
         self.weapon_em_to_atk_ratio = weapon_em_to_atk_ratio
@@ -120,16 +122,16 @@ class DamageCalculator:
 
         # 反应区
         if char.reaction_type == 'amplify':     #增幅反应
-            mastery_factor = (2.78 * char.elemental_mastery) / (1400 + char.elemental_mastery)
+            mastery_factor = (2.78 * char.elemental_mastery) / (1400 + char.elemental_mastery)+char.reaction_bonus
             reaction_multiplier = char.reaction_rate * (1 + mastery_factor)
         else:
             reaction_multiplier = 1.0
         
         if char.reaction_type == 'aggravate':   #超激化反应
-            quichen_base = 1446.853458*1.15*(1+(5*char.elemental_mastery)/(char.elemental_mastery+1200)+0)
+            quichen_base = 1446.853458*1.15*(1+(5*char.elemental_mastery)/(char.elemental_mastery+1200)+char.reaction_bonus)
             baseMultiplier1 += quichen_base*char.quichen_count
         elif char.reaction_type == 'spread':    #蔓激化反应
-            quichen_base = 1446.853458*1.25*(1+(5*char.elemental_mastery)/(char.elemental_mastery+1200)+0)
+            quichen_base = 1446.853458*1.25*(1+(5*char.elemental_mastery)/(char.elemental_mastery+1200)+char.reaction_bonus)
             baseMultiplier1 += quichen_base*char.quichen_count
         else:
             baseMultiplier1 = baseMultiplier1
