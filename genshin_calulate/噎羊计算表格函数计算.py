@@ -24,8 +24,8 @@ class CharacterStats:
 
                  # 特殊加成
                  flat_bonus=683.0,          #固定攻击加成(包含羽毛主词条等)
-                 base_bonus_count=0,       #固定加成次数
-                 base_bonus=0,         #固定基础加成(如申鹤羽毛)
+                 base_bonus=0,              #固定基础加成(如申鹤羽毛)
+                 base_bonus_count=0,        #固定基础加成次数
 
                  #反应乘区
                  reaction_type='aggravate',   #反应类型"增幅amplify""超激化aggravate""蔓激化spread"
