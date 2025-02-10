@@ -12,7 +12,7 @@ class CharacterStats:
                  attack_bonus_pct=1.74,      #百分比攻击加成
                  crit_rate=0.68,           #暴击率
                  crit_damage=1.584,         #爆伤
-                 damage_bonus=3.492,        #增伤
+                 damage_bonus=1.13,        #增伤
                  elemental_mastery=100,   #元素精通
 
                  # 防御属性
