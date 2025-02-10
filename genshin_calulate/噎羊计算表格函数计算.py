@@ -6,35 +6,36 @@ import time
 class CharacterStats:
     def __init__(self,
                  # 基础属性
-                 skill_multiplier=44.05,     #反应倍率
-                 normal_skill_multiplier=18.55,#正常倍率
-                 base_attack=884.0,         #基础攻击
+                 skill_multiplier=23.99,     #可反应倍率
+                 normal_skill_multiplier=12.24,#正常倍率
+                 base_attack=880.0,         #基础攻击
                  attack_bonus_pct=0.4,      #百分比攻击加成
-                 crit_rate=0.711,           #暴击率
+                 crit_rate=0.68,           #暴击率
                  crit_damage=1.584,         #爆伤
-                 damage_bonus=3.248,        #增伤
-                 elemental_mastery=800.0,   #元素精通
+                 damage_bonus=3.492,        #增伤
+                 elemental_mastery=200,   #元素精通
 
                  # 防御属性
                  enemy_resistance=-1.15,    #抗性
-                 defense_reduction=0.0,     #减防数值
+                 defense_reduction=0.3,     #减防数值
                  ignore_defense_pct=0.0,    #无视防御数值
                  enemy_level=100,           #敌人等级
                  char_level=90,             #角色等级
 
                  # 特殊加成
                  flat_bonus=683.0,          #固定攻击加成(包含羽毛主词条等)
-                 base_bonus_count=10,       #固定加成次数
-                 base_bonus=3540.0,         #固定基础加成(如申鹤羽毛)
+                 base_bonus_count=0,       #固定加成次数
+                 base_bonus=0,         #固定基础加成(如申鹤羽毛)
 
                  #反应乘区
-                 reaction_type='amplify',   #反应类型"增幅amplify"
-                 reaction_rate=2.0,         #反应系数
+                 reaction_type='aggravate',   #反应类型"增幅amplify""超激化aggravate""蔓激化spread"
+                 quichen_count = 30,         #激化触发次数
+                 reaction_rate=2.0,         #增幅反应系数
                  #独立乘区
                  independent_multiplier=1.0,#独立乘区
 
                  #特殊参数,赤沙之杖的精通转攻击为例
-                 weapon_em_to_atk_ratio=2.74,   #精通转攻击比例
+                 weapon_em_to_atk_ratio=0,   #精通转攻击比例
                  ):
         # 初始化属性（无圣遗物主词条）
         self.skill_multiplier = skill_multiplier
@@ -59,6 +60,7 @@ class CharacterStats:
         self.base_bonus_count = base_bonus_count
         self.base_bonus = base_bonus
         self.independent_multiplier = independent_multiplier
+        self.quichen_count = quichen_count
 
         # 武器反应参数
         self.weapon_em_to_atk_ratio = weapon_em_to_atk_ratio
@@ -83,7 +85,8 @@ class CharacterStats:
         """总攻击力计算"""
         return (self.base_attack * (1 + self.attack_bonus_pct)
                 + self.flat_bonus
-                + self.weapon_attack_bonus())
+                + self.weapon_attack_bonus()    #这条是赤沙的精通转攻击
+                )
     
     
 
@@ -93,7 +96,7 @@ class DamageCalculator:
     def calculate_damage(char: object) -> object:
         """综合伤害计算"""
         # 基础区计算
-        baseMultiplier1 = char.skill_multiplier * char.total_attack() + char.base_bonus#可增幅倍率
+        baseMultiplier1 = char.skill_multiplier * char.total_attack() + char.base_bonus#可反应倍率
         baseMultiplier2 = char.normal_skill_multiplier * char.total_attack() + char.base_bonus#普通倍率
 
         # 增伤区计算
@@ -116,11 +119,21 @@ class DamageCalculator:
             resist_multiplier = 1 / (1 + 4 * resist)
 
         # 反应区
-        if char.reaction_type == 'amplify':
+        if char.reaction_type == 'amplify':     #增幅反应
             mastery_factor = (2.78 * char.elemental_mastery) / (1400 + char.elemental_mastery)
             reaction_multiplier = char.reaction_rate * (1 + mastery_factor)
         else:
             reaction_multiplier = 1.0
+        
+        if char.reaction_type == 'aggravate':   #超激化反应
+            quichen_base = 1446.853458*1.15*(1+(5*char.elemental_mastery)/(char.elemental_mastery+1200)+0)
+            baseMultiplier1 += quichen_base*char.quichen_count
+        elif char.reaction_type == 'spread':    #蔓激化反应
+            quichen_base = 1446.853458*1.25*(1+(5*char.elemental_mastery)/(char.elemental_mastery+1200)+0)
+            baseMultiplier1 += quichen_base*char.quichen_count
+        else:
+            baseMultiplier1 = baseMultiplier1
+
 
         # 可增幅伤害倍率
         dmg1 =  (baseMultiplier1#这里是基础区
