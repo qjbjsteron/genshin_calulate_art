@@ -6,14 +6,14 @@ import time
 class CharacterStats:
     def __init__(self,
                  # 基础属性
-                 skill_multiplier=23.99,     #可反应倍率
-                 normal_skill_multiplier=12.24,#正常倍率
-                 base_attack=880.0,         #基础攻击
-                 attack_bonus_pct=0.4,      #百分比攻击加成
+                 skill_multiplier=34.61,     #可反应倍率
+                 normal_skill_multiplier=24.5,#正常倍率
+                 base_attack=1300,         #基础攻击
+                 attack_bonus_pct=1.74,      #百分比攻击加成
                  crit_rate=0.68,           #暴击率
                  crit_damage=1.584,         #爆伤
                  damage_bonus=3.492,        #增伤
-                 elemental_mastery=200,   #元素精通
+                 elemental_mastery=100,   #元素精通
 
                  # 防御属性
                  enemy_resistance=-1.15,    #抗性
@@ -28,7 +28,7 @@ class CharacterStats:
                  base_bonus_count=0,        #固定基础加成次数
 
                  #反应乘区
-                 reaction_type='aggravate',   #反应类型"增幅amplify""超激化aggravate""蔓激化spread"
+                 reaction_type='amplify',   #反应类型"增幅amplify""超激化aggravate""蔓激化spread"
                  quichen_count = 30,         #激化触发次数
                  reaction_rate=2.0,         #增幅反应系数
                  reaction_bonus = 0.0,        #反应伤害提升(如魔女套15%)
@@ -135,7 +135,7 @@ class DamageCalculator:
             baseMultiplier1 += quichen_base*char.quichen_count
         else:
             baseMultiplier1 = baseMultiplier1
-            reaction_multiplier = 1.0
+
 
 
         # 可反应伤害
