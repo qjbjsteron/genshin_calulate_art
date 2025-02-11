@@ -5,49 +5,133 @@ import time
 
 class CharacterStats:
     def __init__(self,
-                 # 基础属性
-                 skill_multiplier=34.61,     #可反应倍率
-                 normal_skill_multiplier=24.5,#正常倍率
-                 base_attack=1300,         #基础攻击
-                 attack_bonus_pct=1.74,      #百分比攻击加成
-                 crit_rate=0.68,           #暴击率
-                 crit_damage=1.584,         #爆伤
-                 damage_bonus=1.13,        #增伤
-                 elemental_mastery=1,   #元素精通
+    ############ 基础属性1 ############
+                 skill_multiplier_1=34.61,     #倍率类型1
+                 base_attack_1=1300,         #基础攻击
+                 attack_bonus_pct_1=1.74,      #百分比攻击加成
+                 crit_rate_1=0.68,           #暴击率
+                 crit_damage_1=1.584,         #爆伤
+                 damage_bonus_1=1.13,        #增伤
+                 elemental_mastery_1=1,      #元素精通
 
+                 # 特殊加成
+                 flat_bonus_1=683.0,          #固定攻击加成(包含羽毛主词条等)
+                 base_bonus_1=0,              #固定基础加成(如申鹤羽毛)
+                 base_bonus_count_1=0,        #固定基础加成次数
+
+                 #反应乘区
+                 reaction_type_1='amplify',   #反应类型"增幅amplify""超激化aggravate""蔓激化spread"
+                 quichen_count_1 = 30,         #激化触发次数
+                 reaction_rate_1=2.0,         #增幅反应系数
+                 reaction_bonus_1 = 0.0,        #反应伤害提升(如魔女套15%)
+
+    ############ 基础属性2 ############
+                 skill_multiplier_2=0,     #倍率类型2
+                 base_attack_2=1300,         #基础攻击
+                 attack_bonus_pct_2=1.74,      #百分比攻击加成
+                 crit_rate_2=0.68,           #暴击率
+                 crit_damage_2=1.584,         #爆伤
+                 damage_bonus_2=1.13,        #增伤
+                 elemental_mastery_2=0,      #元素精通(精通为0时不参加反应,参加反应至少为1)
+
+                 # 特殊加成
+                 flat_bonus_2=0,          #固定攻击加成(包含羽毛主词条等)
+                 base_bonus_2=0,              #固定基础加成(如申鹤羽毛)
+                 base_bonus_count_2=0,        #固定基础加成次数
+
+                 #反应乘区
+                 reaction_type_2='amplify',   #反应类型"增幅amplify""超激化aggravate""蔓激化spread"
+                 quichen_count_2 = 0,         #激化触发次数
+                 reaction_rate_2=2.0,         #增幅反应系数
+                 reaction_bonus_2 = 0.0,        #反应伤害提升(如魔女套15%)
+
+    ############ 基础属性3 ############
+                 skill_multiplier_3=0,     #倍率类型3
+                 base_attack_3=1300,         #基础攻击
+                 attack_bonus_pct_3=1.74,      #百分比攻击加成
+                 crit_rate_3=0.68,           #暴击率
+                 crit_damage_3=1.584,         #爆伤
+                 damage_bonus_3=1.13,        #增伤
+                 elemental_mastery_3=0,      #元素精通(精通为0时不参加反应,参加反应至少为1)
+
+                 # 特殊加成
+                 flat_bonus_3=0,          #固定攻击加成(包含羽毛主词条等)
+                 base_bonus_3=0,              #固定基础加成(如申鹤羽毛)
+                 base_bonus_count_3=0,        #固定基础加成次数
+
+                 #反应乘区
+                 reaction_type_3='amplify',   #反应类型"增幅amplify""超激化aggravate""蔓激化spread"
+                 quichen_count_3 =0,         #激化触发次数
+                 reaction_rate_3=2.0,         #增幅反应系数
+                 reaction_bonus_3 = 0.0,        #反应伤害提升(如魔女套15%)
+
+
+
+
+
+                 #独立乘区
+                 independent_multiplier=1.0,#独立乘区
+
+                 #特殊参数,赤沙之杖的精通转攻击为例
+                 weapon_em_to_atk_ratio=0,   #精通转攻击比例
+                 
                  # 防御属性
                  enemy_resistance=-1.15,    #抗性
                  defense_reduction=0.3,     #减防数值
                  ignore_defense_pct=0.0,    #无视防御数值
                  enemy_level=100,           #敌人等级
                  char_level=90,             #角色等级
-
-                 # 特殊加成
-                 flat_bonus=683.0,          #固定攻击加成(包含羽毛主词条等)
-                 base_bonus=0,              #固定基础加成(如申鹤羽毛)
-                 base_bonus_count=0,        #固定基础加成次数
-
-                 #反应乘区
-                 reaction_type='amplify',   #反应类型"增幅amplify""超激化aggravate""蔓激化spread"
-                 quichen_count = 30,         #激化触发次数
-                 reaction_rate=2.0,         #增幅反应系数
-                 reaction_bonus = 0.0,        #反应伤害提升(如魔女套15%)
-                 #独立乘区
-                 independent_multiplier=1.0,#独立乘区
-
-                 #特殊参数,赤沙之杖的精通转攻击为例
-                 weapon_em_to_atk_ratio=0,   #精通转攻击比例
                  ):
-        # 初始化属性（无圣遗物主词条）
-        self.skill_multiplier = skill_multiplier
-        self.normal_skill_multiplier = normal_skill_multiplier
-        self.base_attack = base_attack
-        self.attack_bonus_pct = attack_bonus_pct
-        self.crit_rate = crit_rate
-        self.crit_damage = crit_damage
-        self.damage_bonus = damage_bonus
-        self.elemental_mastery = elemental_mastery
-        
+        # 初始化属性（无圣遗物主词条）_1
+        self.skill_multiplier_1 = skill_multiplier_1
+        self.base_attack_1 = base_attack_1
+        self.attack_bonus_pct_1 = attack_bonus_pct_1
+        self.crit_rate_1 = crit_rate_1
+        self.crit_damage_1 = crit_damage_1
+        self.damage_bonus_1 = damage_bonus_1
+        self.elemental_mastery_1 = elemental_mastery_1
+        self.reaction_type_1 = reaction_type_1
+        self.reaction_rate_1 = reaction_rate_1
+        self.flat_bonus_1 = flat_bonus_1
+        self.base_bonus_count_1 = base_bonus_count_1
+        self.base_bonus_1 = base_bonus_1
+        self.quichen_count_1 = quichen_count_1
+        self.reaction_bonus_1 = reaction_bonus_1
+
+        # 初始化属性（无圣遗物主词条）_2
+        self.skill_multiplier_2 = skill_multiplier_2
+        self.base_attack_2 = base_attack_2
+        self.attack_bonus_pct_2 = attack_bonus_pct_2
+        self.crit_rate_2 = crit_rate_2
+        self.crit_damage_2 = crit_damage_2
+        self.damage_bonus_2 = damage_bonus_2
+        self.elemental_mastery_2 = elemental_mastery_2
+        self.reaction_type_2 = reaction_type_2
+        self.reaction_rate_2 = reaction_rate_2
+        self.flat_bonus_2 = flat_bonus_2
+        self.base_bonus_count_2 = base_bonus_count_2
+        self.base_bonus_2 = base_bonus_2
+        self.quichen_count_2 = quichen_count_2
+        self.reaction_bonus_2 = reaction_bonus_2
+
+        # 初始化属性（无圣遗物主词条）_3
+        self.skill_multiplier_3 = skill_multiplier_3
+        self.base_attack_3 = base_attack_3
+        self.attack_bonus_pct_3 = attack_bonus_pct_3
+        self.crit_rate_3 = crit_rate_3
+        self.crit_damage_3 = crit_damage_3
+        self.damage_bonus_3 = damage_bonus_3
+        self.elemental_mastery_3 = elemental_mastery_3
+        self.reaction_type_3 = reaction_type_3
+        self.reaction_rate_3 = reaction_rate_3
+        self.flat_bonus_3 = flat_bonus_3
+        self.base_bonus_count_3 = base_bonus_count_3
+        self.base_bonus_3 = base_bonus_3
+        self.quichen_count_3 = quichen_count_3
+        self.reaction_bonus_3 = reaction_bonus_3
+
+
+
 
         # 防御属性
         self.enemy_resistance = enemy_resistance
@@ -56,37 +140,36 @@ class CharacterStats:
         self.enemy_level = enemy_level
         self.char_level = char_level
 
-        # 特殊加成
-        self.flat_bonus = flat_bonus
-        self.base_bonus_count = base_bonus_count
-        self.base_bonus = base_bonus
+        #独立乘区
         self.independent_multiplier = independent_multiplier
-        self.quichen_count = quichen_count
-        self.reaction_bonus = reaction_bonus
 
-        # 武器反应参数
+        # 特殊参数
         self.weapon_em_to_atk_ratio = weapon_em_to_atk_ratio
-        self.reaction_type = reaction_type
-        self.reaction_rate = reaction_rate
-
+        
     def valid_check(self):
         """属性有效性检查"""
-        self.crit_rate = min(max(self.crit_rate, 0.0), 1.0)
-        self.crit_damage = max(self.crit_damage, 0.0)
-        self.elemental_mastery = max(self.elemental_mastery, 0.0)
+        self.crit_rate_1 = min(max(self.crit_rate_1, 0.0), 1.0)
+        self.crit_rate_2 = min(max(self.crit_rate_2, 0.0), 1.0)
+        self.crit_rate_3 = min(max(self.crit_rate_3, 0.0), 1.0)
+        self.crit_damage_1 = max(self.crit_damage_1, 0.0)
+        self.crit_damage_2 = max(self.crit_damage_2, 0.0)
+        self.crit_damage_3 = max(self.crit_damage_3, 0.0)
+        self.elemental_mastery_1 = max(self.elemental_mastery_1, 0.0)
+        self.elemental_mastery_2 = max(self.elemental_mastery_2, 0.0)
+        self.elemental_mastery_3 = max(self.elemental_mastery_3, 0.0)
         return self
 
     def weapon_attack_bonus(self):
         """武器特效攻击加成"""
         return min(
-            self.elemental_mastery * self.weapon_em_to_atk_ratio,
-            self.base_attack * 5.0
+            self.elemental_mastery_1 * self.weapon_em_to_atk_ratio,
+            self.base_attack_1 * 5.0
         )
 
     def total_attack(self):
         """总攻击力计算"""
-        return (self.base_attack * (1 + self.attack_bonus_pct)
-                + self.flat_bonus
+        return (self.base_attack_1 * (1 + self.attack_bonus_pct_1)
+                + self.flat_bonus_1
                 + self.weapon_attack_bonus()    #这条是赤沙的精通转攻击
                 )
     
@@ -98,18 +181,71 @@ class DamageCalculator:
     def calculate_damage(char: object) -> object:
         """综合伤害计算"""
         # 基础区计算
-        baseMultiplier1 = char.skill_multiplier * char.total_attack() + char.base_bonus#可反应倍率
-        baseMultiplier2 = char.normal_skill_multiplier * char.total_attack() + char.base_bonus#普通倍率
+        baseMultiplier_1 = char.skill_multiplier_1 * char.total_attack() + char.base_bonus_1#倍率_1
+        baseMultiplier_2 = char.skill_multiplier_2 * char.total_attack() + char.base_bonus_2#倍率_2
+        baseMultiplier_3 = char.skill_multiplier_3 * char.total_attack() + char.base_bonus_3#倍率_2
 
         # 增伤区计算
-        damageBonusZone = 1 + char.damage_bonus
+        damageBonusZone_1 = 1 + char.damage_bonus_1
+        damageBonusZone_2 = 1 + char.damage_bonus_2
+        damageBonusZone_3 = 1 + char.damage_bonus_3
 
         # 双爆区计算
-        critMultiplierZone = 1 + min(char.crit_rate, 1.0) * char.crit_damage
+        critMultiplierZone_1 = 1 + min(char.crit_rate_1, 1.0) * char.crit_damage_1
+        critMultiplierZone_2 = 1 + min(char.crit_rate_2, 1.0) * char.crit_damage_2
+        critMultiplierZone_3 = 1 + min(char.crit_rate_3, 1.0) * char.crit_damage_3
 
         # 防御区计算
         defense = (char.enemy_level + 100) * (1 - char.defense_reduction) * (1 - char.ignore_defense_pct)
         defense_multiplier = (char.char_level + 100) / (char.char_level + 100 + defense)
+
+        # 反应区-------------------------------_1
+        if char.reaction_type_1 == 'amplify':     #增幅反应
+            mastery_factor_1 = (2.78 * char.elemental_mastery_1) / (1400 + char.elemental_mastery_1)+char.reaction_bonus_1
+            reaction_multiplier_1 = char.reaction_rate_1 * (1 + mastery_factor_1)
+        else:
+            reaction_multiplier_1 = 1.0
+        
+        if char.reaction_type_1 == 'aggravate':   #超激化反应
+            quichen_base_1 = 1446.853458*1.15*(1+(5*char.elemental_mastery_1)/(char.elemental_mastery_1+1200)+char.reaction_bonus_1)
+            baseMultiplier_1 += quichen_base_1*char.quichen_count_1
+        elif char.reaction_type_1 == 'spread':    #蔓激化反应
+            quichen_base_1 = 1446.853458*1.25*(1+(5*char.elemental_mastery_1)/(char.elemental_mastery_1+1200)+char.reaction_bonus_1)
+            baseMultiplier_1 += quichen_base_1*char.quichen_count_1
+        else:
+            baseMultiplier_1 = baseMultiplier_1
+
+        # 反应区-------------------------------_2
+        if char.reaction_type_2 == 'amplify':     #增幅反应
+            mastery_factor_2 = (2.78 * char.elemental_mastery_2) / (1400 + char.elemental_mastery_2)+char.reaction_bonus_2
+            reaction_multiplier_2 = char.reaction_rate_2 * (1 + mastery_factor_2)
+        else:
+            reaction_multiplier_2 = 1.0
+        
+        if char.reaction_type_2 == 'aggravate':   #超激化反应
+            quichen_base_2 = 1446.853458*1.15*(1+(5*char.elemental_mastery_2)/(char.elemental_mastery_2+1200)+char.reaction_bonus_2)
+            baseMultiplier_2 += quichen_base_2*char.quichen_count_2
+        elif char.reaction_type_1 == 'spread':    #蔓激化反应
+            quichen_base_2 = 1446.853458*1.25*(1+(5*char.elemental_mastery_2)/(char.elemental_mastery_2+1200)+char.reaction_bonus_2)
+            baseMultiplier_2 += quichen_base_2*char.quichen_count_2
+        else:
+            baseMultiplier_2 = baseMultiplier_2
+        
+        # 反应区-------------------------------_3
+        if char.reaction_type_3 == 'amplify':     #增幅反应
+            mastery_factor_3 = (2.78 * char.elemental_mastery_3) / (1400 + char.elemental_mastery_3)+char.reaction_bonus_3
+            reaction_multiplier_3 = char.reaction_rate_3 * (1 + mastery_factor_3)
+        else:
+            reaction_multiplier_3 = 1.0
+        
+        if char.reaction_type_3 == 'aggravate':   #超激化反应
+            quichen_base_3 = 1446.853458*1.15*(1+(5*char.elemental_mastery_3)/(char.elemental_mastery_3+1200)+char.reaction_bonus_3)
+            baseMultiplier_3 += quichen_base_3*char.quichen_count_3
+        elif char.reaction_type_3 == 'spread':    #蔓激化反应
+            quichen_base_3 = 1446.853458*1.25*(1+(5*char.elemental_mastery_3)/(char.elemental_mastery_3+1200)+char.reaction_bonus_3)
+            baseMultiplier_3 += quichen_base_3*char.quichen_count_3
+        else:
+            baseMultiplier_3 = baseMultiplier_3
 
         # 抗性区
         resist = char.enemy_resistance
@@ -120,45 +256,37 @@ class DamageCalculator:
         else:
             resist_multiplier = 1 / (1 + 4 * resist)
 
-        # 反应区
-        if char.reaction_type == 'amplify':     #增幅反应
-            mastery_factor = (2.78 * char.elemental_mastery) / (1400 + char.elemental_mastery)+char.reaction_bonus
-            reaction_multiplier = char.reaction_rate * (1 + mastery_factor)
-        else:
-            reaction_multiplier = 1.0
-        
-        if char.reaction_type == 'aggravate':   #超激化反应
-            quichen_base = 1446.853458*1.15*(1+(5*char.elemental_mastery)/(char.elemental_mastery+1200)+char.reaction_bonus)
-            baseMultiplier1 += quichen_base*char.quichen_count
-        elif char.reaction_type == 'spread':    #蔓激化反应
-            quichen_base = 1446.853458*1.25*(1+(5*char.elemental_mastery)/(char.elemental_mastery+1200)+char.reaction_bonus)
-            baseMultiplier1 += quichen_base*char.quichen_count
-        else:
-            baseMultiplier1 = baseMultiplier1
-
-
-
-        # 可反应伤害
-        dmg1 =  (baseMultiplier1#这里是基础区
-                 *reaction_multiplier#增幅区
-                 *damageBonusZone#这是增伤区
-                 *critMultiplierZone#双爆区
+        # 伤害倍率1
+        dmg1 =  (baseMultiplier_1#这里是基础区
+                 *reaction_multiplier_1#增幅区
+                 *damageBonusZone_1#这是增伤区
+                 *critMultiplierZone_1#双爆区
                  *defense_multiplier#防御区
                  *resist_multiplier#抗性区
                  *char.independent_multiplier#独立区                            
                 )
-        # 普通伤害
-        dmg2 = (baseMultiplier2#这里是基础区
-                 *damageBonusZone#这是增伤区
-                 *critMultiplierZone#双爆区
+        # 伤害倍率2
+        dmg2 =  (baseMultiplier_2#这里是基础区
+                 *reaction_multiplier_2#增幅区
+                 *damageBonusZone_2#这是增伤区
+                 *critMultiplierZone_2#双爆区
                  *defense_multiplier#防御区
                  *resist_multiplier#抗性区
                  *char.independent_multiplier#独立区                            
                 )
-
+        # 伤害倍率3
+        dmg3 =  (baseMultiplier_3#这里是基础区
+                 *reaction_multiplier_3#增幅区
+                 *damageBonusZone_3#这是增伤区
+                 *critMultiplierZone_3#双爆区
+                 *defense_multiplier#防御区
+                 *resist_multiplier#抗性区
+                 *char.independent_multiplier#独立区                            
+                )
         return (
             dmg1
-            +dmg2               
+            +dmg2
+            +dmg3               
         )
 
 
@@ -196,15 +324,25 @@ class ArtifactOptimizer:
             option = self.main_options[slot_idx][option_idx]
             for attr, value in option.items():
                 if attr == 'atk_pct':
-                    temp_char.attack_bonus_pct += value
+                    temp_char.attack_bonus_pct_1 += value
+                    temp_char.attack_bonus_pct_2 += value
+                    temp_char.attack_bonus_pct_3 += value
                 elif attr == 'em':
-                    temp_char.elemental_mastery += value
+                    temp_char.elemental_mastery_1 += value
+                    temp_char.elemental_mastery_2 += value
+                    temp_char.elemental_mastery_3 += value
                 elif attr == 'dmg_bonus':
-                    temp_char.damage_bonus += value
+                    temp_char.damage_bonus_1 += value
+                    temp_char.damage_bonus_2 += value
+                    temp_char.damage_bonus_3 += value
                 elif attr == 'cd':
-                    temp_char.crit_damage += value
+                    temp_char.crit_damage_1 += value
+                    temp_char.crit_damage_2 += value
+                    temp_char.crit_damage_3 += value
                 elif attr == 'cr':
-                    temp_char.crit_rate += value
+                    temp_char.crit_rate_1 += value
+                    temp_char.crit_rate_2 += value
+                    temp_char.crit_rate_3 += value
         return temp_char.valid_check()
 
     def _optimize_substats(self, base_char):
@@ -222,10 +360,18 @@ class ArtifactOptimizer:
                     max(atk, cr, cd, em) <= self.substat_rules['stat_limits']):
 
                 temp_char = copy.deepcopy(base_char)
-                temp_char.attack_bonus_pct += atk * 0.05
-                temp_char.crit_rate += cr * 0.033
-                temp_char.crit_damage += cd * 0.066
-                temp_char.elemental_mastery += em * 20
+                temp_char.attack_bonus_pct_1 += atk * 0.05
+                temp_char.attack_bonus_pct_2 += atk * 0.05
+                temp_char.attack_bonus_pct_3 += atk * 0.05
+                temp_char.crit_rate_1 += cr * 0.033
+                temp_char.crit_rate_2 += cr * 0.033
+                temp_char.crit_rate_3 += cr * 0.033
+                temp_char.crit_damage_1 += cd * 0.066
+                temp_char.crit_damage_2 += cd * 0.066
+                temp_char.crit_damage_3 += cd * 0.066
+                temp_char.elemental_mastery_1 += em * 20
+                temp_char.elemental_mastery_2 += em * 20
+                temp_char.elemental_mastery_3 += em * 20
                 temp_char.valid_check()
 
                 current_dmg = DamageCalculator.calculate_damage(temp_char)
@@ -242,27 +388,37 @@ class ArtifactOptimizer:
 
         # 攻击词条
         temp = copy.deepcopy(final_char)
-        temp.attack_bonus_pct += 0.05
+        temp.attack_bonus_pct_1 += 0.05
+        temp.attack_bonus_pct_2 += 0.05
+        temp.attack_bonus_pct_3 += 0.05
         gains['atk'] = (DamageCalculator.calculate_damage(temp) - base_dmg) / base_dmg
 
         # 暴击词条
         temp = copy.deepcopy(final_char)
-        temp.crit_rate += 0.033
+        temp.crit_rate_1 += 0.033
+        temp.crit_rate_2 += 0.033
+        temp.crit_rate_3 += 0.033
         gains['cr'] = (DamageCalculator.calculate_damage(temp) - base_dmg) / base_dmg
 
         # 暴伤词条
         temp = copy.deepcopy(final_char)
-        temp.crit_damage += 0.066
+        temp.crit_damage_1 += 0.066
+        temp.crit_damage_2 += 0.066
+        temp.crit_damage_3 += 0.066
         gains['cd'] = (DamageCalculator.calculate_damage(temp) - base_dmg) / base_dmg
 
         # 精通词条
         temp = copy.deepcopy(final_char)
-        temp.elemental_mastery += 20
+        temp.elemental_mastery_1 += 20
+        temp.elemental_mastery_2 += 20
+        temp.elemental_mastery_3 += 20
         gains['em'] = (DamageCalculator.calculate_damage(temp) - base_dmg) / base_dmg
 
         # 增伤词条（理论值）
         temp = copy.deepcopy(final_char)
-        temp.damage_bonus += 0.05
+        temp.damage_bonus_1 += 0.05
+        temp.damage_bonus_2 += 0.05
+        temp.damage_bonus_3 += 0.05
         gains['dmg_bonus'] = (DamageCalculator.calculate_damage(temp) - base_dmg) / base_dmg
 
         return gains
@@ -296,10 +452,18 @@ class ArtifactOptimizer:
             if sub_damage > global_best['damage']:
                 # 构建最终角色
                 final_char = copy.deepcopy(temp_char)
-                final_char.attack_bonus_pct += sub_allocation[0] * 0.05
-                final_char.crit_rate += sub_allocation[1] * 0.033
-                final_char.crit_damage += sub_allocation[2] * 0.066
-                final_char.elemental_mastery += sub_allocation[3] * 20
+                final_char.attack_bonus_pct_1 += sub_allocation[0] * 0.05
+                final_char.attack_bonus_pct_2 += sub_allocation[0] * 0.05
+                final_char.attack_bonus_pct_3 += sub_allocation[0] * 0.05
+                final_char.crit_rate_1 += sub_allocation[1] * 0.033
+                final_char.crit_rate_2 += sub_allocation[1] * 0.033
+                final_char.crit_rate_3 += sub_allocation[1] * 0.033
+                final_char.crit_damage_1 += sub_allocation[2] * 0.066
+                final_char.crit_damage_2 += sub_allocation[2] * 0.066
+                final_char.crit_damage_3 += sub_allocation[2] * 0.066
+                final_char.elemental_mastery_1 += sub_allocation[3] * 20
+                final_char.elemental_mastery_2 += sub_allocation[3] * 20
+                final_char.elemental_mastery_3 += sub_allocation[3] * 20
                 final_char.valid_check()
 
                 global_best.update({
@@ -342,10 +506,10 @@ def format_result(result):
 
 【当前面板】
 总攻击力：{c.total_attack():.1f}
-暴击率：{c.crit_rate:.1%}
-暴击伤害：{c.crit_damage:.1%}
-元素精通：{c.elemental_mastery}
-伤害加成：{c.damage_bonus:.1%}
+暴击率：{c.crit_rate_1:.1%}
+暴击伤害：{c.crit_damage_1:.1%}
+元素精通：{c.elemental_mastery_1}
+伤害加成：{c.damage_bonus_1:.1%}
 武器特效转攻击加成：{c.weapon_attack_bonus():,.0f}
 
 【边际收益/词条】
