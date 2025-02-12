@@ -6,49 +6,49 @@ import time
 class CharacterStats:
     def __init__(self,
     ############ 基础属性1 ############
-                 skill_multiplier_1=34.61,     #倍率类型1
-                 base_attack_1=1300,         #基础攻击
-                 attack_bonus_pct_1=1.74,      #百分比攻击加成
-                 crit_rate_1=0.68,           #暴击率
-                 crit_damage_1=1.584,         #爆伤
-                 damage_bonus_1=1.13,        #增伤
-                 elemental_mastery_1=1,      #元素精通
+                 skill_multiplier_1=33.53,     #倍率类型1
+                 base_attack_1=1023,         #基础攻击
+                 attack_bonus_pct_1=0.8,      #百分比攻击加成
+                 crit_rate_1=0.523,           #暴击率
+                 crit_damage_1=0.9,         #爆伤
+                 damage_bonus_1=4.211,        #增伤
+                 elemental_mastery_1=0,      #元素精通(精通为0时不参加反应,参加反应至少为1)
 
                  # 特殊加成
-                 flat_bonus_1=683.0,          #固定攻击加成(包含羽毛主词条等)
-                 base_bonus_1=0,              #固定基础加成(如申鹤羽毛)
-                 base_bonus_count_1=0,        #固定基础加成次数
+                 flat_bonus_1=311.0,          #固定攻击加成(包含羽毛主词条等)
+                 base_bonus_1=8,              #固定基础加成(如申鹤羽毛)
+                 base_bonus_count_1=18000,        #固定基础加成次数
 
                  #反应乘区
-                 reaction_type_1='amplify',   #反应类型"增幅amplify""超激化aggravate""蔓激化spread"
-                 quichen_count_1 = 30,         #激化触发次数
-                 reaction_rate_1=2.0,         #增幅反应系数
+                 reaction_type_1='NONE',   #反应类型"增幅amplify""超激化aggravate""蔓激化spread""无反应NONE"增幅反应记得修改反应系数
+                 quichen_count_1 = 0,         #激化触发次数
+                 reaction_rate_1= 1,         #增幅反应系数
                  reaction_bonus_1 = 0.0,        #反应伤害提升(如魔女套15%)
 
     ############ 基础属性2 ############
-                 skill_multiplier_2=0,     #倍率类型2
-                 base_attack_2=1300,         #基础攻击
-                 attack_bonus_pct_2=1.74,      #百分比攻击加成
-                 crit_rate_2=0.68,           #暴击率
-                 crit_damage_2=1.584,         #爆伤
-                 damage_bonus_2=1.13,        #增伤
+                 skill_multiplier_2=33.93,     #倍率类型2
+                 base_attack_2=1023,         #基础攻击
+                 attack_bonus_pct_2=0.8,      #百分比攻击加成
+                 crit_rate_2=0.463,           #暴击率
+                 crit_damage_2=0.9,         #爆伤
+                 damage_bonus_2=1.622,        #增伤
                  elemental_mastery_2=0,      #元素精通(精通为0时不参加反应,参加反应至少为1)
 
                  # 特殊加成
-                 flat_bonus_2=0,          #固定攻击加成(包含羽毛主词条等)
-                 base_bonus_2=0,              #固定基础加成(如申鹤羽毛)
-                 base_bonus_count_2=0,        #固定基础加成次数
+                 flat_bonus_2=311,          #固定攻击加成(包含羽毛主词条等)
+                 base_bonus_2=257.28,              #固定基础加成(如申鹤羽毛)
+                 base_bonus_count_2=14,        #固定基础加成次数
 
                  #反应乘区
-                 reaction_type_2='amplify',   #反应类型"增幅amplify""超激化aggravate""蔓激化spread"
+                 reaction_type_2='NONE',   #反应类型"增幅amplify""超激化aggravate""蔓激化spread"
                  quichen_count_2 = 0,         #激化触发次数
-                 reaction_rate_2=2.0,         #增幅反应系数
+                 reaction_rate_2=1,         #增幅反应系数
                  reaction_bonus_2 = 0.0,        #反应伤害提升(如魔女套15%)
 
     ############ 基础属性3 ############
                  skill_multiplier_3=0,     #倍率类型3
                  base_attack_3=1300,         #基础攻击
-                 attack_bonus_pct_3=1.74,      #百分比攻击加成
+                 attack_bonus_pct_3=0.8,      #百分比攻击加成
                  crit_rate_3=0.68,           #暴击率
                  crit_damage_3=1.584,         #爆伤
                  damage_bonus_3=1.13,        #增伤
@@ -60,9 +60,9 @@ class CharacterStats:
                  base_bonus_count_3=0,        #固定基础加成次数
 
                  #反应乘区
-                 reaction_type_3='amplify',   #反应类型"增幅amplify""超激化aggravate""蔓激化spread"
+                 reaction_type_3='NONE',   #反应类型"增幅amplify""超激化aggravate""蔓激化spread"
                  quichen_count_3 =0,         #激化触发次数
-                 reaction_rate_3=2.0,         #增幅反应系数
+                 reaction_rate_3= 1,         #增幅反应系数
                  reaction_bonus_3 = 0.0,        #反应伤害提升(如魔女套15%)
 
 
@@ -166,10 +166,22 @@ class CharacterStats:
             self.base_attack_1 * 5.0
         )
 
-    def total_attack(self):
+    def total_attack_1(self):
         """总攻击力计算"""
         return (self.base_attack_1 * (1 + self.attack_bonus_pct_1)
                 + self.flat_bonus_1
+                + self.weapon_attack_bonus()    #这条是赤沙的精通转攻击
+                )
+    def total_attack_2(self):
+        """总攻击力计算"""
+        return (self.base_attack_2 * (1 + self.attack_bonus_pct_2)
+                + self.flat_bonus_2
+                + self.weapon_attack_bonus()    #这条是赤沙的精通转攻击
+                )
+    def total_attack_3(self):
+        """总攻击力计算"""
+        return (self.base_attack_3 * (1 + self.attack_bonus_pct_3)
+                + self.flat_bonus_3
                 + self.weapon_attack_bonus()    #这条是赤沙的精通转攻击
                 )
     
@@ -181,9 +193,9 @@ class DamageCalculator:
     def calculate_damage(char: object) -> object:
         """综合伤害计算"""
         # 基础区计算
-        baseMultiplier_1 = char.skill_multiplier_1 * char.total_attack() + char.base_bonus_1#倍率_1
-        baseMultiplier_2 = char.skill_multiplier_2 * char.total_attack() + char.base_bonus_2#倍率_2
-        baseMultiplier_3 = char.skill_multiplier_3 * char.total_attack() + char.base_bonus_3#倍率_2
+        baseMultiplier_1 = char.skill_multiplier_1 * char.total_attack_1() + char.base_bonus_1#倍率_1
+        baseMultiplier_2 = char.skill_multiplier_2 * char.total_attack_2() + char.base_bonus_2#倍率_2
+        baseMultiplier_3 = char.skill_multiplier_3 * char.total_attack_3() + char.base_bonus_3#倍率_2
 
         # 增伤区计算
         damageBonusZone_1 = 1 + char.damage_bonus_1
@@ -312,8 +324,8 @@ class ArtifactOptimizer:
             ]
         ]
         self.substat_rules = {
-            'total': 42,                #总词条数
-            'crit_limit': 32,           #双爆词条上限
+            'total': 38,                #总词条数
+            'crit_limit': 30,           #双爆词条上限
             'stat_limits': 24           #单词条上限
         }
 
@@ -505,7 +517,7 @@ def format_result(result):
 精通词条：{result['sub_allocation'][3]}
 
 【当前面板】
-总攻击力：{c.total_attack():.1f}
+总攻击力：{c.total_attack_1():.1f}
 暴击率：{c.crit_rate_1:.1%}
 暴击伤害：{c.crit_damage_1:.1%}
 元素精通：{c.elemental_mastery_1}
