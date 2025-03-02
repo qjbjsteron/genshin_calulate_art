@@ -6,24 +6,41 @@ from concurrent.futures import ProcessPoolExecutor
 class CharacterStats:
     def __init__(self, 
                  # 使用字典存储多倍率类型(可自行按照格式添加)
+                 #瓦雷莎
                  skill_data={
-                     1: {'multiplier': 33.53, 'base_attack': 1023, 'attack_pct': 1.22, 'crit_rate': 0.523, 
-                         'crit_damage': 0.9, 'damage_bonus': 5.011, 'em': 0, 'flat_bonus': 311, 
-                         'base_bonus': 8, 'base_count': 18000, 'reaction_type': 'NONE', 
+                     1: {'multiplier': 7.344, 'base_attack': 1013.63, 'attack_pct': 0.76, 'crit_rate': 0.465, #瓦q
+                         'crit_damage': 1.941, 'damage_bonus': 1.24, 'em': 0, 'flat_bonus': 685, 
+                         'base_bonus': 0, 'base_count': 0, 'reaction_type': 'NONE', 
                          'quichen_count': 0, 'reaction_rate': 1, 'reaction_bonus': 0.0},
-                     2: {'multiplier': 33.93, 'base_attack': 1023, 'attack_pct': 1.90, 'crit_rate': 0.463,
-                         'crit_damage': 0.9, 'damage_bonus': 1.872, 'em': 0, 'flat_bonus': 311,
-                         'base_bonus': 257.28, 'base_count': 14, 'reaction_type': 'NONE',
-                         'quichen_count': 0, 'reaction_rate': 1, 'reaction_bonus': 0.0},
-                     3: {'multiplier': 20, 'base_attack': 1300, 'attack_pct': 0.8, 'crit_rate': 0.68,
-                         'crit_damage': 1.584, 'damage_bonus': 1.13, 'em': 0, 'flat_bonus': 0,
+                     2: {'multiplier': 2.703, 'base_attack': 1013.63, 'attack_pct': 1.36, 'crit_rate': 0.365,  #第一个e
+                         'crit_damage': 0.5, 'damage_bonus': 2.152, 'em': 0, 'flat_bonus': 685,
                          'base_bonus': 0, 'base_count': 0, 'reaction_type': 'NONE',
-                         'quichen_count': 0, 'reaction_rate': 1, 'reaction_bonus': 0.0}
+                         'quichen_count': 0, 'reaction_rate': 1, 'reaction_bonus': 0.0},
+                     3: {'multiplier': 9.84, 'base_attack': 1013.63, 'attack_pct': 1.81, 'crit_rate': 0.365,   #瓦重击*4
+                         'crit_damage': 0.941, 'damage_bonus': 2.472, 'em': 0, 'flat_bonus': 685,
+                         'base_bonus': 2900, 'base_count': 3, 'reaction_type': 'NONE',
+                         'quichen_count': 0, 'reaction_rate': 1, 'reaction_bonus': 0.0},
+                     4: {'multiplier': 8.109, 'base_attack': 1013.63, 'attack_pct': 1.81, 'crit_rate': 0.365,  #瓦e*3
+                         'crit_damage': 0.941, 'damage_bonus': 2.152, 'em': 0, 'flat_bonus': 685,
+                         'base_bonus': 0, 'base_count': 0, 'reaction_type': 'NONE',
+                         'quichen_count': 0, 'reaction_rate': 1, 'reaction_bonus': 0.0},
+                     5: {'multiplier': 26.76, 'base_attack': 1013.63, 'attack_pct': 1.81, 'crit_rate': 0.52,  #瓦下落*4
+                         'crit_damage': 3.301, 'damage_bonus': 4.772, 'em': 0, 'flat_bonus': 685,
+                         'base_bonus': 100700, 'base_count': 1, 'reaction_type': 'NONE',
+                         'quichen_count': 0, 'reaction_rate': 1, 'reaction_bonus': 0.0},
+                     6: {'multiplier': 34.224, 'base_attack': 1013.63, 'attack_pct': 1.81, 'crit_rate': 0.52,  #瓦小q*4
+                         'crit_damage': 3.301, 'damage_bonus': 5.772, 'em': 0, 'flat_bonus': 685,
+                         'base_bonus': 80700, 'base_count': 1, 'reaction_type': 'NONE',
+                         'quichen_count': 0, 'reaction_rate': 1, 'reaction_bonus': 0.0},
+                     7: {'multiplier': 7.148, 'base_attack': 1013.63, 'attack_pct': 1.81, 'crit_rate': 0.365,  #瓦擦伤*4
+                         'crit_damage': 0.941, 'damage_bonus': 2.152, 'em': 0, 'flat_bonus': 685,
+                         'base_bonus': 0, 'base_count': 0, 'reaction_type': 'NONE',
+                         'quichen_count': 0, 'reaction_rate': 1, 'reaction_bonus': 0.0},
                  },
                  # 公共属性
                  weapon_em_to_atk=0,
-                 enemy_resist=-1.15,
-                 defense_red=0.3,
+                 enemy_resist=-0.75,
+                 defense_red=0,
                  ignore_def=0.0,
                  enemy_lv=100,
                  char_lv=90,
@@ -113,7 +130,7 @@ class ArtifactOptimizer:
             [{'atk_pct':0.466}, {'em':187}, {'dmg_bonus':0.466}],  # 杯子
             [{'atk_pct':0.466}, {'em':187}, {'cd':0.662}, {'cr':0.331}]  # 头冠
         ]
-        self.sub_rules = {'total':38, 'crit_limit':30, 'stat_limits':24}
+        self.sub_rules = {'total':40, 'crit_limit':32, 'stat_limits':24}
         self.sub_cache = None  # 副词条组合缓存
 
     def _gen_substats(self):
@@ -281,8 +298,8 @@ def format_result(result):
     for sid, data in c.skills.items():
         if data['multiplier'] <= 0:
             continue
-        report += f"类型{sid}: 倍率{data['multiplier']} 攻击{data['attack_pct']:.1%} "
-        report += f"暴击{data['crit_rate']:.1%}/暴伤{data['crit_damage']:.1%}\n"
+        report += f"类型{sid}: 倍率{data['multiplier']} 攻击{data['attack_pct']:.1%} 总攻击力：{c.total_attack(sid):.1f} "
+        report += f"暴击{data['crit_rate']:.1%} 暴伤{data['crit_damage']:.1%} 增伤{data['damage_bonus']:.1%}\n"
     return report
 
 

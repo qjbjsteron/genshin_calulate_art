@@ -1,0 +1,35 @@
+{
+  "1": {
+    "multiplier": 7.344,
+    "base_attack": 1013.63,
+    "attack_pct": 0.76,
+    "crit_rate": 0.465,
+    "crit_damage": 1.941,
+    "damage_bonus": 1.24,
+    "em": 0.0,
+    "base_bonus": 0.0,
+    "reaction_type": "NONE"
+  },
+  "2": {
+    "multiplier": 2.703,
+    "base_attack": 1013.63,
+    "attack_pct": 0.76,
+    "crit_rate": 0.365,
+    "crit_damage": 0.5,
+    "damage_bonus": 2.152,
+    "em": 0.0,
+    "base_bonus": 0.0,
+    "reaction_type": "NONE"
+  },
+  "3": {
+    "multiplier": 12.703,
+    "base_attack": 1013.63,
+    "attack_pct": 0.76,
+    "crit_rate": 0.365,
+    "crit_damage": 0.5,
+    "damage_bonus": 2.152,
+    "em": 0.0,
+    "base_bonus": 0.0,
+    "reaction_type": "NONE"
+  }
+}
